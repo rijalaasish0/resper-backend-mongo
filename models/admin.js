@@ -7,9 +7,31 @@ mongoose.connect('mongodb+srv://admin:newpassword@backendtestcluster.e3vce.mongo
 });
 
 const Schema = mongoose.Schema;
-const Admin = new Schema({
+
+const Server = new Schema({
     username: String,
     password: String
+})
+
+const Rating = new Schema({
+    rating: Number,
+    date: String
+})
+
+const Feedback = new Schema({
+    feedback: String,
+    date: String
+})
+
+const Admin = new Schema({
+    username: {type: String, required: true},
+    restaurantID: Number,
+    password: String,
+    restaurantName: {type: String, required: true},
+    tableNumber: {type: Number, default:10},
+    feedbacks: [Feedback],
+    ratings: [Rating],
+    servers: [Server]
 })
 
 Admin.plugin(passportLocalMongoose);

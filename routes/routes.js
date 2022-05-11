@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login'); //authorization
-const {getLogout, postRegister, postLogin, getFail, getHidden} = require('../controllers/controllers')
+const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, getRatings, getFeedbacks} = require('../controllers/admin.controllers')
 
 const passport = require('passport');
 // router.post('/admin/register', postAdminRegister);
@@ -17,11 +17,23 @@ router.get('/hidden', connectEnsureLogin.ensureLoggedIn(), getHidden);
 
 router.get('/fail', getFail);
 
-router.get('/logout', getLogout);
+router.get('/admin/logout', getLogout);
 
-router.post('/register', postRegister)
+router.post('/admin/register', postRegister);
 
-router.post('/login', passport.authenticate('local', { failureRedirect: '/fail' }), postLogin);
+router.post('/:restaurantID/feedback', postFeedback);
+
+router.post('/:restaurantID/rating', postRating);
+
+router.post('/admin/login', passport.authenticate('local', { failureRedirect: '/fail' }), postLogin);
+
+router.post('/admin/servers', connectEnsureLogin.ensureLoggedIn(), addServer);
+
+router.get('/admin/servers', connectEnsureLogin.ensureLoggedIn(), getServers);
+
+router.get('/admin/ratings',  connectEnsureLogin.ensureLoggedIn(), getRatings);
+
+router.get('/admin/feedbacks',  connectEnsureLogin.ensureLoggedIn(), getFeedbacks);
 
 
 module.exports = router;
