@@ -62,6 +62,59 @@ class Controllers {
         }
     }
 
+    async deleteRating(req, res) {
+        let ratingToDeleteID = req.body.id;
+        try {
+            Admin.updateOne(
+                { username: req.user.username },
+                { $pull: { ratings: { _id: ratingToDeleteID } } },
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+
+                        return res.json({ "error": "Couldn't delete the rating" });
+                    } else {
+                        if (result.modifiedCount === 0) {
+                            return res.json({ "error": "Rating with that ID doesn't exist", status: 200 });
+                        } else {
+                            return res.json({ "success": "Rating has been deleted", status: 200 });
+
+                        }
+                    }
+                }
+            );
+        } catch (e) {
+            res.json({ "success": "false" });
+        }
+    }
+
+
+    async deleteFeedback(req, res) {
+        let feedbackToDeleteID = req.body.id;
+        try {
+            Admin.updateOne(
+                { username: req.user.username },
+                { $pull: { feedbacks: { _id: feedbackToDeleteID } } },
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+
+                        return res.json({ "error": "Couldn't delete the feedback" });
+                    } else {
+                        if (result.modifiedCount === 0) {
+                            return res.json({ "error": "Feedback with that ID doesn't exist", status: 200 });
+                        } else {
+                            return res.json({ "success": "Feedback has been deleted", status: 200 });
+
+                        }
+                    }
+                }
+            );
+        } catch (e) {
+            res.json({ "success": "false" });
+        }
+    }
+
     async postFeedback(req, res) {
         const restaurantID = req.params['restaurantID'];
         console.log(restaurantID);
@@ -88,6 +141,32 @@ class Controllers {
         } catch (e) {
             console.log(e);
             return res.json({ "error": "DB error" });
+        }
+    }
+
+    async deleteServer(req, res) {
+        let serverToDelete = req.body.username;
+        try {
+            Admin.updateOne(
+                { username: req.user.username },
+                { $pull: { servers: { username: serverToDelete } } },
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+
+                        return res.json({ "error": "Couldn't delete the server" });
+                    } else {
+                        if (result.modifiedCount === 0) {
+                            return res.json({ "error": "Server with that username doesn't exist", status: 200 });
+                        } else {
+                            return res.json({ "success": "Server has been deleted", status: 200 });
+
+                        }
+                    }
+                }
+            );
+        } catch (e) {
+            res.json({ "success": "false" });
         }
     }
 
@@ -125,7 +204,17 @@ class Controllers {
     }
 
     async addServer(req, res) {
+
+        const searchedUser = await Admin.findOne({ username: req.user.username });
+
+        if (searchedUser.servers.find((server) => server.username === req.body.username)) {
+            return res.json({ "error": "server with that username already exists" });
+        }
+
         let newServer = { username: req.body.username, password: req.body.password };
+
+
+
         try {
             Admin.updateOne(
                 { username: req.user.username },

@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login'); //authorization
-const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, getRatings, getFeedbacks} = require('../controllers/admin.controllers')
+const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, getRatings, getFeedbacks, deleteServer, deleteRating, deleteFeedback} = require('../controllers/admin.controllers')
 
 const passport = require('passport');
 // router.post('/admin/register', postAdminRegister);
@@ -34,6 +34,12 @@ router.get('/admin/servers', connectEnsureLogin.ensureLoggedIn(), getServers);
 router.get('/admin/ratings',  connectEnsureLogin.ensureLoggedIn(), getRatings);
 
 router.get('/admin/feedbacks', getFeedbacks);
+
+router.delete('/admin/servers', connectEnsureLogin.ensureLoggedIn(), deleteServer);
+
+router.delete('/admin/ratings', connectEnsureLogin.ensureLoggedIn(), deleteRating);
+
+router.delete('/admin/feedbacks', connectEnsureLogin.ensureLoggedIn(), deleteFeedback);
 
 
 module.exports = router;
