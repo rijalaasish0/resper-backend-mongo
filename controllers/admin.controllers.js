@@ -144,6 +144,41 @@ class Controllers {
         }
     }
 
+    async getTableNumber(req, res) {
+        try {
+            const searchedUser = await Admin.findOne({ username: req.user.username });
+            return res.json({ "success": searchedUser.tableNumber, status: 200 })
+        } catch (e) {
+            return res.json({ "error": "DB error" });
+        }
+    }
+
+    async changeTableNumber(req, res) {
+        let newNumberTables;
+        try{
+            newNumberTables = parseInt(req.body.tableNumber);
+        }catch(e){
+            return res.json({"error": "New value invalid"});
+        }
+        
+        try {
+            Admin.updateOne(
+                { username: req.user.username },
+                {$set: {tableNumber: newNumberTables}},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        return res.json({ "error": "Couldn't change the number of tables" });
+                    } else {
+                        return res.json({ "success": "Changed the number of tables", status: 200 });
+                    }
+                }
+            )
+        } catch (e) {
+            return res.json({ "error": "DB error" });
+        }
+    }
+
     async deleteServer(req, res) {
         let serverToDelete = req.body.username;
         try {
