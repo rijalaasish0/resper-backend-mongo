@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
 const Admin = require('./models/admin');
@@ -7,7 +8,10 @@ const cors = require('cors');
 const routes = require('./routes/routes');
 
 const app = express();
-app.use(cors())
+app.use(cors({origin:true,credentials: true}));
+
+app.use(cookieParser());
+
 app.use(session({
     secret: 'bhalugangbhalugang',
     resave: false,

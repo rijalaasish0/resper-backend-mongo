@@ -33,7 +33,7 @@ router.get('/admin/servers', connectEnsureLogin.ensureLoggedIn(), getServers);
 
 router.get('/admin/ratings',  connectEnsureLogin.ensureLoggedIn(), getRatings);
 
-router.get('/admin/feedbacks',  connectEnsureLogin.ensureLoggedIn(), getFeedbacks);
+router.get('/admin/feedbacks', getFeedbacks);
 
 
 module.exports = router;

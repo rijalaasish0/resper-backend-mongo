@@ -20,6 +20,7 @@ class Controllers {
     }
 
     postLogin(req, res) {
+        console.log(req.sessionID);
         res.json({ "success": req.user, status: 200 });
     }
 
