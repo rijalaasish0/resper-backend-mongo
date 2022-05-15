@@ -12,7 +12,7 @@ class Controllers {
         }
         try {
             const generatedRestaurantID = parseInt(Math.random() * 1000000);
-            await Admin.register({ username: req.body.username, restaurantID: generatedRestaurantID, restaurantName: req.body.restaurantName, feedbacks: req.body.feedbacks, ratings: req.body.ratings, servers: req.body.servers, active: false }, req.body.password);
+            await Admin.register({ username: req.body.username, restaurantID: generatedRestaurantID, restaurantName: req.body.restaurantName, tableNumber: req.body.tableNumber, active: false }, req.body.password);
             res.json({ "success": generatedRestaurantID, status: 200 });
         } catch (e) {
             return res.json({ "error": "Bad request" });
@@ -246,7 +246,7 @@ class Controllers {
             return res.json({ "error": "server with that username already exists" });
         }
 
-        let newServer = { username: req.body.username, password: req.body.password };
+        let newServer = { username: req.body.username, fullname: req.body.fullname, password: req.body.password };
 
 
 

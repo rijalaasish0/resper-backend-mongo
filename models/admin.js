@@ -10,6 +10,7 @@ const Schema = mongoose.Schema;
 
 const Server = new Schema({
     username: String,
+    fullname: String,
     password: String
 })
 
