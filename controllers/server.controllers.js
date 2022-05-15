@@ -4,10 +4,10 @@ const jwt = require("jsonwebtoken");
 class ServerControllers {
     async serverLogin(req, res) {
         try {
-            const { username, password } = req.body;
+            const { username, password, fullname } = req.body;
             const reqRestaurantID = parseInt(req.params['restaurantID']);
 
-            if (!(username && password && reqRestaurantID)) {
+            if (!(username && fullname && password && reqRestaurantID)) {
                 return res.json({ "error": "all input required" });
             }
 
@@ -23,7 +23,7 @@ class ServerControllers {
             if(serverUser){
                 if(serverUser.password === password){
                     const token = jwt.sign(
-                        {user_id: serverUser._id, username: username},
+                        {user_id: serverUser._id, username: username, fullname: fullname},
                         "bhalubangbest",
                         {
                             expiresIn: "10h",

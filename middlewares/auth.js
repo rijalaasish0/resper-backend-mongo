@@ -21,7 +21,7 @@ const isServer = async (req, res, next) => {
     try{
         const decoded = jwt.verify(token, "bhalubangbest");
         console.log('decoded ' + decoded.username + decoded.user_id);
-        req.user = {username: decoded.username, _id: decoded.user_id};
+        req.user = decoded;
     }catch(e){
         return res.json({"error": "Invalid Token"});
     }

@@ -47,8 +47,8 @@ router.put('/admin/tables', connectEnsureLogin.ensureLoggedIn(), isAdmin, change
 
 router.post('/:restaurantID/servers/login', serverLogin);
 
-router.get('/serverTest', isServer, function(req, res) {
-    res.json({"congrats":req.user});
+router.post('/serverTest', isServer, function(req, res) {
+    res.json({"success":req.user, "status":200});
 });
 
 module.exports = router;
