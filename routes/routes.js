@@ -2,6 +2,8 @@ let express = require('express');
 let router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login'); //authorization
 const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, getRatings, getFeedbacks, deleteServer, deleteRating, deleteFeedback, changeTableNumber} = require('../controllers/admin.controllers')
+const {serverLogin} = require('../controllers/server.controllers');
+const {isAdmin, isServer} = require('../middlewares/auth');
 
 const passport = require('passport');
 // router.post('/admin/register', postAdminRegister);
@@ -17,7 +19,7 @@ router.get('/hidden', connectEnsureLogin.ensureLoggedIn(), getHidden);
 
 router.get('/fail', getFail);
 
-router.get('/admin/logout', getLogout);
+router.get('/admin/logout', connectEnsureLogin.ensureLoggedIn(), isAdmin, getLogout);
 
 router.post('/admin/register', postRegister);
 
@@ -27,21 +29,26 @@ router.post('/:restaurantID/rating', postRating);
 
 router.post('/admin/login', passport.authenticate('local', { failureRedirect: '/fail' }), postLogin);
 
-router.post('/admin/servers', connectEnsureLogin.ensureLoggedIn(), addServer);
+router.post('/admin/servers', connectEnsureLogin.ensureLoggedIn(), isAdmin, addServer);
 
-router.get('/admin/servers', connectEnsureLogin.ensureLoggedIn(), getServers);
+router.get('/admin/servers', connectEnsureLogin.ensureLoggedIn(), isAdmin, getServers);
 
-router.get('/admin/ratings',  connectEnsureLogin.ensureLoggedIn(), getRatings);
+router.get('/admin/ratings',  connectEnsureLogin.ensureLoggedIn(), isAdmin, getRatings);
 
-router.get('/admin/feedbacks', getFeedbacks);
+router.get('/admin/feedbacks', connectEnsureLogin.ensureLoggedIn(), isAdmin, getFeedbacks);
 
-router.delete('/admin/servers', connectEnsureLogin.ensureLoggedIn(), deleteServer);
+router.delete('/admin/servers', connectEnsureLogin.ensureLoggedIn(), isAdmin, deleteServer);
 
-router.delete('/admin/ratings', connectEnsureLogin.ensureLoggedIn(), deleteRating);
+router.delete('/admin/ratings', connectEnsureLogin.ensureLoggedIn(), isAdmin, deleteRating);
 
-router.delete('/admin/feedbacks', connectEnsureLogin.ensureLoggedIn(), deleteFeedback);
+router.delete('/admin/feedbacks', connectEnsureLogin.ensureLoggedIn(), isAdmin, deleteFeedback);
 
-router.put('/admin/tables', connectEnsureLogin.ensureLoggedIn(), changeTableNumber);
+router.put('/admin/tables', connectEnsureLogin.ensureLoggedIn(), isAdmin, changeTableNumber);
 
+router.post('/:restaurantID/servers/login', serverLogin);
+
+router.get('/serverTest', isServer, function(req, res) {
+    res.json({"congrats":req.user});
+});
 
 module.exports = router;

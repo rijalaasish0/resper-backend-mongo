@@ -31,6 +31,7 @@ const Admin = new Schema({
     restaurantName: {type: String, required: true},
     tableNumber: {type: Number, default:10},
     feedbacks: [Feedback],
+    isAdmin: {type: Boolean, default: true},
     ratings: [Rating],
     servers: [Server]
 })
