@@ -8,16 +8,25 @@ mongoose.connect('mongodb+srv://admin:newpassword@backendtestcluster.e3vce.mongo
 
 const Schema = mongoose.Schema;
 
+
+const HoursWorked = new Schema({
+    date: Date,
+    numHours: Number,
+})
+
 const Server = new Schema({
     username: String,
     fullname: String,
-    password: String
+    password: String,
+    hoursWorked: [HoursWorked]
 })
 
 const Rating = new Schema({
     rating: Number,
     date: String
 })
+
+
 
 const Feedback = new Schema({
     feedback: String,

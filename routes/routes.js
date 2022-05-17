@@ -2,7 +2,7 @@ let express = require('express');
 let router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login'); //authorization
 const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, getRatings, getFeedbacks, deleteServer, deleteRating, deleteFeedback, changeTableNumber} = require('../controllers/admin.controllers')
-const {serverLogin} = require('../controllers/server.controllers');
+const {serverLogin, checkIn, checkOut, getServer} = require('../controllers/server.controllers');
 const {isAdmin, isServer} = require('../middlewares/auth');
 
 const passport = require('passport');
@@ -45,10 +45,14 @@ router.delete('/admin/feedbacks', connectEnsureLogin.ensureLoggedIn(), isAdmin, 
 
 router.put('/admin/tables', connectEnsureLogin.ensureLoggedIn(), isAdmin, changeTableNumber);
 
-router.post('/:restaurantID/servers/login', serverLogin);
+router.post('/:restaurantID/server/login', serverLogin);
 
 router.post('/serverTest', isServer, function(req, res) {
     res.json({"success":req.user, "status":200});
 });
+
+router.post('/:restaurantID/server/checkin', isServer, checkIn);
+router.post('/:restaurantID/server/checkout', isServer, checkOut);
+router.get('/:restaurantID/server', isServer, getServer);
 
 module.exports = router;
