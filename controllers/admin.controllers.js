@@ -6,6 +6,12 @@ class Controllers {
         res.json({ "success": "logged out", status: 200 });
     }
 
+    
+    async getRestaurantInfo(req, res){
+        const searchedUser = await Admin.findOne({ username: req.body.username });
+        res.json({"restaurantName":searchedUser.restaurantName, "tableNumber":searchedUser.tableNumber, "restaurantID":searchedUser.restaurantID, status:200})
+    }
+
     async postRegister(req, res) {
         const searchedUser = await Admin.findOne({ username: req.body.username });
         if (searchedUser) {
