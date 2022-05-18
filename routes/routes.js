@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login'); //authorization
-const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, getRatings, getFeedbacks, deleteServer, deleteRating, deleteFeedback, changeTableNumber} = require('../controllers/admin.controllers')
+const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, getRatings, getFeedbacks, deleteServer, deleteRating, deleteFeedback, changeTableNumber, changeRestaurantName} = require('../controllers/admin.controllers')
 const {serverLogin, checkIn, checkOut, getServer} = require('../controllers/server.controllers');
 const {isAdmin, isServer} = require('../middlewares/auth');
 
@@ -44,8 +44,11 @@ router.delete('/admin/ratings', connectEnsureLogin.ensureLoggedIn(), isAdmin, de
 router.delete('/admin/feedbacks', connectEnsureLogin.ensureLoggedIn(), isAdmin, deleteFeedback);
 
 router.put('/admin/tables', connectEnsureLogin.ensureLoggedIn(), isAdmin, changeTableNumber);
+router.put('/admin/restaurantName', connectEnsureLogin.ensureLoggedIn(), isAdmin, changeRestaurantName);
+
 
 router.post('/:restaurantID/server/login', serverLogin);
+
 
 router.post('/serverTest', isServer, function(req, res) {
     res.json({"success":req.user, "status":200});

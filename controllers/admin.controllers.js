@@ -179,6 +179,33 @@ class Controllers {
         }
     }
 
+
+    async changeRestaurantName(req, res) {
+        let newRestaurantName;
+        try{
+            newRestaurantName = req.body.restaurantName;
+        }catch(e){
+            return res.json({"error": "New value invalid"});
+        }
+        
+        try {
+            Admin.updateOne(
+                { username: req.user.username },
+                {$set: {restaurantName: newRestaurantName}},
+                function (err, result) {
+                    if (err) {
+                        console.log(err);
+                        return res.json({ "error": "Couldn't change the restaurant name" });
+                    } else {
+                        return res.json({ "success": "Changed the name of restaurant", status: 200 });
+                    }
+                }
+            )
+        } catch (e) {
+            return res.json({ "error": "DB error" });
+        }
+    }
+
     async deleteServer(req, res) {
         let serverToDelete = req.body.username;
         try {

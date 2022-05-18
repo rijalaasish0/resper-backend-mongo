@@ -43,7 +43,7 @@ class ServerControllers {
         try {
             const reqRestaurantID = req.params['restaurantID'];
             const username = req.user.username;
-            const date = new Date();
+            const date = Date();
             const checkInTime = date.getUTCMinutes();
 
             const success = Time.checkInUser(reqRestaurantID, username, checkInTime);
@@ -72,7 +72,7 @@ class ServerControllers {
         const reqRestaurantID = req.params['restaurantID'];
         const username = req.user.username;
         const serverID = req.user.user_id;
-        const date = new Date();
+        const date = Date();
         const checkOutTime = date.getUTCMinutes();
         const success = Time.checkOutUser(reqRestaurantID, username, checkOutTime);
         if(success === 0){
