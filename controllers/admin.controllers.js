@@ -8,7 +8,7 @@ class Controllers {
 
     
     async getRestaurantInfo(req, res){
-        const searchedUser = await Admin.findOne({ username: req.body.username });
+        const searchedUser = await Admin.findOne({ username: req.user.username });
         res.json({"restaurantName":searchedUser.restaurantName, "tableNumber":searchedUser.tableNumber, "restaurantID":searchedUser.restaurantID, status:200})
     }
 
