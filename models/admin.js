@@ -18,6 +18,8 @@ const Server = new Schema({
     username: String,
     fullname: String,
     password: String,
+    currentWeek: Number,
+    weeklyHours: {type: Number, default:0},
     hoursWorked: [HoursWorked]
 })
 

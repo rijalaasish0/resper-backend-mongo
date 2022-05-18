@@ -21,6 +21,14 @@ class Time {
             return 0;
         }
     }
+
+    getWeekNumber(){
+        let currentDate = new Date(Date());
+        let oneJan = new Date(currentDate.getFullYear(), 0, 1);
+        let numberOfDays = Math.floor((currentDate - oneJan) / (24 * 60 * 60 * 1000));
+        let result = Math.ceil( (currentDate.getDay() + 1 + numberOfDays)/7 );
+        return result;
+    }
 }
 
 module.exports = new Time();

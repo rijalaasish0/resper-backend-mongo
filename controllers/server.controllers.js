@@ -1,6 +1,7 @@
 const Admin = require('../models/admin');
 const jwt = require("jsonwebtoken");
 const Time = require("../models/time");
+const { update } = require('../models/admin');
 
 class ServerControllers {
     async serverLogin(req, res) {
@@ -22,7 +23,7 @@ class ServerControllers {
             if (serverUser) {
                 if (serverUser.password === password) {
                     const token = jwt.sign(
-                        { user_id: serverUser._id, username: username, fullname: serverUser.fullname, hoursWorked: serverUser.hoursWorked},
+                        { user_id: serverUser._id, username: username, fullname: serverUser.fullname, currentWeek: serverUser.currentWeek, hoursWorked: serverUser.hoursWorked},
                         "bhalubangbest",
                         {
                             expiresIn: "1h",
@@ -43,7 +44,7 @@ class ServerControllers {
         try {
             const reqRestaurantID = req.params['restaurantID'];
             const username = req.user.username;
-            const date = Date();
+            const date = new Date();
             const checkInTime = date.getUTCMinutes();
 
             const success = Time.checkInUser(reqRestaurantID, username, checkInTime);
@@ -65,6 +66,7 @@ class ServerControllers {
         // const restaurantAdmin = await Admin.findOne({ restaurantID: reqRestaurantID });
         // let serverUser = restaurantAdmin.servers.find((server) => server.username === username);
         // await delete serverUser.password;
+        console.log(Time.getWeekNumber());
         res.json({"success":req.user});
     }
 
@@ -72,8 +74,16 @@ class ServerControllers {
         const reqRestaurantID = req.params['restaurantID'];
         const username = req.user.username;
         const serverID = req.user.user_id;
-        const date = Date();
-        const checkOutTime = date.getUTCMinutes();
+        const workedWeek = req.user.currentWeek;
+
+        const restaurantAdmin = await Admin.findOne({ restaurantID: reqRestaurantID });
+        const serverUser = restaurantAdmin.servers.find((server) => server.username === username);
+        const weeklyHours = serverUser.weeklyHours;
+
+        const thisWeek = Time.getWeekNumber();
+        
+        const date = new Date();
+        const checkOutTime = date.getUTCMinutes() + parseInt(Math.random()*5);
         const success = Time.checkOutUser(reqRestaurantID, username, checkOutTime);
         if(success === 0){
             res.json({"error":"User not checked in or just checked in", status:404});
@@ -90,10 +100,43 @@ class ServerControllers {
                         return res.json({ "error": "DB error" });
                     } else {
                         console.log(result);
-                        return res.json({ "success": "Hours have been added", status: 200, hours: success});
                     }
                 }
             )
+
+            if(workedWeek === thisWeek){
+                console.log(weeklyHours + " " + success);
+
+                const updatedHours = weeklyHours + success;
+                Admin.updateOne(
+                    { restaurantID: reqRestaurantID, "servers._id": serverID},
+                    { $set: { "servers.$.weeklyHours": updatedHours} },
+                    function (err, result) {
+                        if (err) {
+                            console.log(err);
+                            return res.json({ "error": "DB error" });
+                        } else {
+                            console.log(result);
+                            return res.json({ "success": "Hours have been added", status: 200, hours: success});
+                        }
+                    }
+                )
+            }else{
+                Admin.updateOne(
+                    { restaurantID: reqRestaurantID, "servers._id": serverID},
+                    { $set: { "servers.$.currentWeek": thisWeek, "servers.$.weeklyHours": success}, },
+                    function (err, result) {
+                        if (err) {
+                            console.log(err);
+                            return res.json({ "error": "DB error" });
+                        } else {
+                            console.log(result);
+                            return res.json({ "success": "Hours have been added", status: 200, hours: success});
+                        }
+                    }
+                )
+                
+            }
         }
     }
 }

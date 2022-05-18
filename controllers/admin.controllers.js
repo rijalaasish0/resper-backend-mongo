@@ -1,4 +1,5 @@
 const Admin = require('../models/admin');
+const Time = require('../models/time');
 class Controllers {
     getLogout(req, res) {
         req.logout();
@@ -273,7 +274,7 @@ class Controllers {
             return res.json({ "error": "server with that username already exists" });
         }
 
-        let newServer = { username: req.body.username, fullname: req.body.fullname, password: req.body.password };
+        let newServer = { username: req.body.username, fullname: req.body.fullname, password: req.body.password, currentWeek: Time.getWeekNumber()};
 
 
 
