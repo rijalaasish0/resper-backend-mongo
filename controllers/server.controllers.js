@@ -83,7 +83,7 @@ class ServerControllers {
         const thisWeek = Time.getWeekNumber();
         
         const date = new Date();
-        const checkOutTime = date.getUTCMinutes() + parseInt(Math.random()*5);
+        const checkOutTime = date.getUTCMinutes() + 1;
         const success = Time.checkOutUser(reqRestaurantID, username, checkOutTime);
         if(success === 0){
             res.json({"error":"User not checked in or just checked in", status:404});

@@ -130,7 +130,7 @@ class Controllers {
             return res.json({ "error": "No feedback provided" });
         }
 
-        const feedback = { feedback: req.body.feedback, date: req.body.date };
+        const feedback = { feedback: req.body.feedback, date: Date() };
         console.log(feedback);
         try {
             Admin.updateOne(
@@ -248,7 +248,7 @@ class Controllers {
             return res.json({ "error": "No rating provided" });
         }
 
-        const rating = { rating: req.body.rating, date: req.body.date }
+        const rating = { rating: req.body.rating, date: Date() }
 
 
         console.log(restaurantID);
