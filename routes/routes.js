@@ -1,8 +1,8 @@
 let express = require('express');
 let router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login'); //authorization
-const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, getRatings, getFeedbacks, deleteServer, deleteRating, deleteFeedback, changeTableNumber, changeRestaurantName, getRestaurantInfo} = require('../controllers/admin.controllers')
-const {serverLogin, checkIn, checkOut, getServer} = require('../controllers/server.controllers');
+const {getLogout, postRegister, postLogin, getFail, getHidden, addServer, getServers, postFeedback, postRating, postRequests, getRatings, getFeedbacks, deleteServer, deleteRating, deleteFeedback, changeTableNumber, changeRestaurantName, getRestaurantInfo, getTables} = require('../controllers/admin.controllers')
+const {serverLogin, checkIn, checkOut, getServer, getRequests, getServerRequests, getTableInfo,postTablesToServers, getTablesAssignedArray, updateTableServer, updateRequest} = require('../controllers/server.controllers');
 const {isAdmin, isServer} = require('../middlewares/auth');
 
 const passport = require('passport');
@@ -27,6 +27,9 @@ router.post('/:restaurantID/feedback', postFeedback);
 
 router.post('/:restaurantID/rating', postRating);
 
+router.post('/:restaurantId/requests', postRequests);
+
+
 router.post('/admin/login', passport.authenticate('local', { failureRedirect: '/fail' }), postLogin);
 
 router.post('/admin/servers', connectEnsureLogin.ensureLoggedIn(), isAdmin, addServer);
@@ -34,6 +37,8 @@ router.post('/admin/servers', connectEnsureLogin.ensureLoggedIn(), isAdmin, addS
 router.get('/admin/servers', connectEnsureLogin.ensureLoggedIn(), isAdmin, getServers);
 
 router.get('/admin/ratings',  connectEnsureLogin.ensureLoggedIn(), isAdmin, getRatings);
+
+
 
 router.get('/admin/feedbacks', connectEnsureLogin.ensureLoggedIn(), isAdmin, getFeedbacks);
 
@@ -58,6 +63,19 @@ router.post('/serverTest', isServer, function(req, res) {
 
 router.post('/:restaurantID/server/checkin', isServer, checkIn);
 router.post('/:restaurantID/server/checkout', isServer, checkOut);
+router.post('/:restaurantID/server/tables', isServer, postTablesToServers);
+
+router.put('/:restaurantID/server/tables', updateTableServer)
+router.put('/:restaurantID/server/requests', updateRequest);
+
+
+
+router.get('/:restaurantID/server/requests', getRequests);
+router.get('/:restaurantID/server/serverRequests/:username', getServerRequests);
+
+router.get('/:restaurantID/server/tables', getTables, isServer);
+router.get('/:restaurantID/server/:username', getTablesAssignedArray, isServer);
 router.get('/:restaurantID/server', isServer, getServer);
+
 
 module.exports = router;

@@ -1,12 +1,15 @@
 const { decode } = require('jsonwebtoken');
 const Admin = require('../models/admin');
 const jwt = require("jsonwebtoken");
+
+
 const isAdmin = async (req, res, next) => {
     let userIsAdmin = await req.user.isAdmin;
-    console.log(req.user);
+    console.log("token", req.user);
     if(userIsAdmin){
         next();
     }else{
+        console.log("Failed to Verify")
         res.redirect('/fail');
     }
 }
@@ -23,6 +26,7 @@ const isServer = async (req, res, next) => {
         console.log('decoded ' + decoded.username + decoded.user_id);
         req.user = decoded;
     }catch(e){
+        console.log(e)
         return res.json({"error": "Invalid Token"});
     }
     return next();

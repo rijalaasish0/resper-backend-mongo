@@ -1,5 +1,7 @@
 const Admin = require('../models/admin');
 const Time = require('../models/time');
+
+
 class Controllers {
     getLogout(req, res) {
         req.logout();
@@ -63,11 +65,13 @@ class Controllers {
         try {
             const searchedUser = await Admin.findOne({ username: req.user.username });
             return res.json({ "success": searchedUser.ratings, status: 200 })
+
         } catch (e) {
             console.log(e);
             return res.json({ "error": "DB error" });
         }
     }
+
 
     async deleteRating(req, res) {
         let ratingToDeleteID = req.body.id;
@@ -124,7 +128,7 @@ class Controllers {
 
     async postFeedback(req, res) {
         const restaurantID = req.params['restaurantID'];
-        console.log(restaurantID);
+        // console.log(restaurantID);
 
         if (!req.body.feedback) {
             return res.json({ "error": "No feedback provided" });
@@ -151,11 +155,41 @@ class Controllers {
         }
     }
 
-    async getTableNumber(req, res) {
+
+    async postRequests(req, res) {
+        const request = req.body.requests; const table = req.body.table;
+        if (!request) {
+            return res.json({ "error": "No request provided" });
+        }
+        
+        const reqRestaurantID = req.params.restaurantId;
+
+        Admin.findOneAndUpdate(
+            { restaurantID: reqRestaurantID, "servedTables.table": table },
+            { $push: { "servedTables.$.requests": { request: request, time:  Date() } } },
+            { new: true }
+          ).then((admin) => {
+              if (admin) {
+                // Successfully updated the request
+                console.log("Request added:", admin);
+                return res.json({"success": "requested posted", "status": 200})
+              } else {
+                // Admin or table not found
+                console.log("Admin or table not found");
+              }
+            })
+            .catch((error) => {
+              // Error occurred
+              console.log("Error:", error);
+            });
+    }
+
+    async getTables(req, res){
         try {
-            const searchedUser = await Admin.findOne({ username: req.user.username });
-            return res.json({ "success": searchedUser.tableNumber, status: 200 })
-        } catch (e) {
+            const reqRestaurantID = parseInt(req.params['restaurantID']);
+            const restaurantAdmin = await Admin.findOne({ restaurantID: reqRestaurantID });
+            return res.json({"tables": restaurantAdmin.tableNumber, status:200});
+        } catch (error) {
             return res.json({ "error": "DB error" });
         }
     }
@@ -249,10 +283,6 @@ class Controllers {
         }
 
         const rating = { rating: req.body.rating, date: Date() }
-
-
-        console.log(restaurantID);
-        console.log(rating);
         try {
             Admin.updateOne(
                 { restaurantID: restaurantID },
