@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 // mongodb+srv://admin:newpassword@backendtestcluster.e3vce.mongodb.net/backendTestCluster?retryWrites=true&w=majority
-mongoose.connect('mongodb+srv://simantsingh09:Davschool.123@cluster0.iqiphp7.mongodb.net/?retryWrites=true&w=majority', {
+mongoose.connect('mongodb+srv://admin2:admin@backendtestcluster.by4xk6a.mongodb.net/?retryWrites=true&w=majority&appName=backendTestCluster', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
